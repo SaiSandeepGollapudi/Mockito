@@ -13,9 +13,11 @@ import org.mockito.Mock;
 import org.mockito.internal.matchers.And;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = MvcTestingExampleApplication.class)
@@ -30,10 +32,15 @@ public class MockAnnotationTest {
     @Autowired
     StudentGrades studentGrades;
 
-    @Mock
+  //  @Mock
+  @MockBean
     private ApplicationDao applicationDao;
 
-    @InjectMocks//this will only inject the dependencies that are annotated with mock or spy. It won't handle other classes that are auto wired without those dependencies,
+   // @InjectMocks this will only inject the dependencies that are annotated with mock or spy. It won't handle other classes that are auto wired without those dependencies,
+ @Autowired//Spring Boot @MockBean .Instead of using Mockito: @Mock and @InjectMocks Use Spring Boot support: @MockBean and @Autowired
+//    @MockBean includes Mockito @Mock functionality also adds mock bean to Spring ApplicationContext
+//if existing bean is there, the mock bean will replace it thus making the mock bean available for injection with @Autowired
+ //Use Spring Boot @MockBean when you need to inject mocks AND inject regular beans from app context
   private ApplicationService applicationService;
 
     @BeforeEach
@@ -65,8 +72,20 @@ verify(applicationDao, times(1)).addGradeResultsForSingleClass(studentGrades.get
 //we should have called a given method X number of times
 //and you can kind of use that to verify that information.
 
-
     }
+@DisplayName("Find Gpa")
+    @Test
+public void assertEqualsTestFindGpa(){
+        when(applicationDao.findGradePointAverage(studentGrades.getMathGradeResults())).thenReturn(88.31);
+        assertEquals(88.31, applicationService.findGradePointAverage(studentOne.getStudentGrades().getMathGradeResults()));
+}
+
+@DisplayName("Not Null")
+    @Test
+    public void testAssertNotNull (){
+when(applicationDao.checkNull(studentGrades.getMathGradeResults())).thenReturn(true);
+assertNotNull(applicationService.checkNull(studentOne.getStudentGrades().getMathGradeResults()),"object should not null");
+}
     }
 
 
