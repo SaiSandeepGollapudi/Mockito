@@ -20,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = MvcTestingExampleApplication.class)
+@SpringBootTest(classes = MvcTestingExampleApplication.class)//Loads Spring Application Context
+//if test class is in a different package like this, Explicitly reference main SpringBoot class
+// If you give same package names as your main package.No need to explicitly reference the main Spring Boot application class
 public class MockAnnotationTest {
 
     @Autowired
@@ -55,10 +57,12 @@ public class MockAnnotationTest {
         @Test
                 public void assertEqualsTestAddGrades(){
         ApplicationDao appicationDao;
-        when(applicationDao.addGradeResultsForSingleClass(studentGrades.getMathGradeResults())).thenReturn(100.00);//
+        when(applicationDao.addGradeResultsForSingleClass(studentGrades.getMathGradeResults())).thenReturn(100.00);//This line is setting up a mock behavior using Mockito's
+        // when(...).thenReturn(...) syntax. It's essentially configuring a mock of your applicationDao object to return a specific value (100.00)
 //      when method addGradeResultsForSingleClass(...) is called then return 100.0,  we're basically setting up some mock code here,the response can be a string,it can be a Boolean,
 //        it could be an ArrayList,it could be an Object.
-
+//the first line is setting up a mock behavior for a method call on the DAO layer, while the second line is invoking the corresponding method on the service layer and testing its behavior
+// based on the mock setup. This isolation allows you to focus specifically on the behavior of the service layer method without being affected by the actual behavior of the DAO layer method.
 assertEquals(100, applicationService.addGradeResultsForSingleClass(studentOne.getStudentGrades().getMathGradeResults()));
 //        we're calling this service.
 //        The service makes use of the DAO.
